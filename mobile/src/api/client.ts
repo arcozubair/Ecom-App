@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { useAuthStore } from '../store/useAuthStore';
 
 
-const API_URL = 'http://192.168.1.36:3000/api';
+const API_URL = 'https://ecom-app-s20s.onrender.com/api';
 
 const apiClient = axios.create({
   baseURL: API_URL,

@@ -22,7 +22,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/shipping', shippingRoutes);
-
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 app.get('/', (req, res) => {
   res.send('E-commerce API is running...');
 });
