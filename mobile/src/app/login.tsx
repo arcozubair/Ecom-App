@@ -48,11 +48,10 @@ export default function LoginScreen() {
           {/* Brand */}
           <View style={styles.brandWrap}>
             <Image
-              source={require('../../assets/images/splash-icon.png')}
-              style={styles.brandIcon}
+              source={require('../../assets/images/logo.png')}
+              style={{ width: 220, height: 48, marginBottom: spacing.md }}
               resizeMode="contain"
             />
-            <Text style={styles.brand}>PINE</Text>
             <Text style={styles.brandSub}>Your fashion destination</Text>
           </View>
 

@@ -19,6 +19,44 @@ import { colors, typography, spacing, radius, shadows, BOTTOM_INSET } from '../.
 
 const { width, height } = Dimensions.get('window');
 
+const CAROUSEL_DATA = [
+  {
+    id: '1',
+    image: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?q=80&w=1200&auto=format&fit=crop',
+    pill: 'BOYS COLLECTION',
+    title: 'Adventure\nAwaits',
+    link: '/products?search=boys'
+  },
+  {
+    id: '2',
+    image: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?q=80&w=1200&auto=format&fit=crop',
+    pill: 'GIRLS COLLECTION',
+    title: 'Style &\nGrace',
+    link: '/products?search=girls'
+  },
+  {
+    id: '3',
+    image: 'https://images.unsplash.com/photo-1603344797033-f0f4f587ab60?q=80&w=1200&auto=format&fit=crop',
+    pill: 'MODEST WEAR',
+    title: 'Elegance\nRedefined',
+    link: '/products?search=modest'
+  },
+  {
+    id: '4',
+    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop',
+    pill: 'S / S 2026 COLLECTION',
+    title: 'Dress for\nEvery Moment',
+    link: '/products'
+  },
+  {
+    id: '5',
+    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=1200&auto=format&fit=crop',
+    pill: 'NEW ARRIVALS',
+    title: 'Explore\nThe Latest',
+    link: '/products?orderby=date'
+  }
+];
+
 export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -27,6 +65,18 @@ export default function HomeScreen() {
 
   const [page, setPage] = useState(1);
   const [allProducts, setAllProducts] = useState<any[]>([]);
+
+  // Autoplay Carousel Logic
+  const scrollRef = React.useRef<ScrollView>(null);
+  const scrollIndex = React.useRef(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      scrollIndex.current = (scrollIndex.current + 1) % CAROUSEL_DATA.length;
+      scrollRef.current?.scrollTo({ x: scrollIndex.current * width, animated: true });
+    }, 4000); // Swipe every 4 seconds
+    return () => clearInterval(timer);
+  }, []);
 
   const { data: newArrivals, isLoading: loadingNew } = useQuery({
     queryKey: ['new-arrivals'],
@@ -69,44 +119,55 @@ export default function HomeScreen() {
 
   const ListHeader = useCallback(() => (
     <View>
-      {/* ─── Hero ─────────────────────────────────────────── */}
+      {/* ─── Hero Carousel ─────────────────────────────────────────── */}
       <View style={styles.heroWrap}>
-        <ImageBackground
-          source={{ uri: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop' }}
-          style={styles.heroBg}
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          style={{ flex: 1 }}
         >
-          <View style={styles.heroOverlay}>
-            {/* Header Row */}
-            <View style={[styles.headerRow, { paddingTop: insets.top + spacing.md }]}>
-              <Text style={styles.brandName}>PINE</Text>
-              <View style={styles.headerActions}>
-                <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/search' as any)}>
-                  <Feather name="search" size={20} color="#FFF" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/(tabs)/cart' as any)}>
-                  <Feather name="shopping-bag" size={20} color="#FFF" />
-                  {cartItems.length > 0 && (
-                    <View style={styles.cartBadge}>
-                      <Text style={styles.cartBadgeText}>{cartItems.length}</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
+          {CAROUSEL_DATA.map((slide, index) => (
+            <ImageBackground
+              key={slide.id}
+              source={{ uri: slide.image }}
+              style={[styles.heroBg, { width, height: '100%' }]}
+            >
+              <View style={[styles.heroOverlay, { backgroundColor: index > 0 ? 'rgba(0,0,0,0.3)' : 'rgba(10,20,15,0.55)', justifyContent: 'flex-end', paddingTop: 100 }]}>
+                <View style={styles.heroContent}>
+                  <View style={styles.heroPill}>
+                    <Text style={styles.heroPillText}>{slide.pill}</Text>
+                  </View>
+                  <Text style={styles.heroTitle}>{slide.title}</Text>
+                  <TouchableOpacity style={styles.heroBtn} onPress={() => router.push(slide.link as any)}>
+                    <Text style={styles.heroBtnText}>Discover</Text>
+                    <Feather name="arrow-right" size={16} color={colors.primary} />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            </ImageBackground>
+          ))}
+        </ScrollView>
 
-            {/* Hero Content */}
-            <View style={styles.heroContent}>
-              <View style={styles.heroPill}>
-                <Text style={styles.heroPillText}>S / S 2026 COLLECTION</Text>
-              </View>
-              <Text style={styles.heroTitle}>Dress for{'\n'}Every Moment</Text>
-              <TouchableOpacity style={styles.heroBtn} onPress={() => router.push('/products' as any)}>
-                <Text style={styles.heroBtnText}>Shop Now</Text>
-                <Feather name="arrow-right" size={16} color={colors.primary} />
-              </TouchableOpacity>
-            </View>
+        {/* Floating Header Row */}
+        <View style={[styles.headerRow, { paddingTop: insets.top + spacing.md, position: 'absolute', top: 0, left: 0, right: 0, paddingHorizontal: spacing.base, zIndex: 10 }]}>
+          <Text style={styles.brandName}>PINE THREAD</Text>
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/search' as any)}>
+              <Feather name="search" size={20} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/(tabs)/cart' as any)}>
+              <Feather name="shopping-bag" size={20} color="#FFF" />
+              {cartItems.length > 0 && (
+                <View style={styles.cartBadge}>
+                  <Text style={styles.cartBadgeText}>{cartItems.length}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
           </View>
-        </ImageBackground>
+        </View>
       </View>
 
       {/* ─── Quick Links ──────────────────────────────────── */}

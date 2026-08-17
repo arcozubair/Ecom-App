@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Image, ActivityIndicator, Dimensions, Platform
+  Image, ActivityIndicator, Dimensions, Platform, Alert
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
@@ -82,7 +82,11 @@ export default function ProductDetailsScreen() {
   };
 
   const handleAddToCart = () => {
-    addToCart(product, selectedSize || sizes[0] || 'Default');
+    if (sizes.length > 0 && !selectedSize) {
+      Alert.alert('Size Required', 'Please select a size before adding to bag.');
+      return;
+    }
+    addToCart(product, selectedSize || 'Default');
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };

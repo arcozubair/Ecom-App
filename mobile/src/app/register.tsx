@@ -11,6 +11,32 @@ import { Feather } from '@expo/vector-icons';
 import { PrimaryButton } from '../components/ui/PrimaryButton';
 import { colors, typography, spacing, radius, shadows } from '../theme';
 
+const InputField = ({ id, label, value, onChangeText, placeholder, keyboardType, autoCapitalize, icon, secure, showPassword, setShowPassword, focused, setFocused }: any) => (
+  <View style={styles.fieldWrap}>
+    <Text style={styles.fieldLabel}>{label}</Text>
+    <View style={[styles.inputRow, focused === id && styles.inputFocused]}>
+      <Feather name={icon} size={16} color={focused === id ? colors.primary : colors.textMuted} />
+      <TextInput
+        style={styles.input}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.textMuted}
+        keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        secureTextEntry={secure && !showPassword}
+        onFocus={() => setFocused(id)}
+        onBlur={() => setFocused(null)}
+      />
+      {secure && (
+        <TouchableOpacity onPress={() => setShowPassword((v: boolean) => !v)}>
+          <Feather name={showPassword ? 'eye-off' : 'eye'} size={16} color={colors.textMuted} />
+        </TouchableOpacity>
+      )}
+    </View>
+  </View>
+);
+
 export default function RegisterScreen() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -49,43 +75,16 @@ export default function RegisterScreen() {
     }
   };
 
-  const InputField = ({ id, label, value, onChangeText, placeholder, keyboardType, autoCapitalize, icon, secure }: any) => (
-    <View style={styles.fieldWrap}>
-      <Text style={styles.fieldLabel}>{label}</Text>
-      <View style={[styles.inputRow, focused === id && styles.inputFocused]}>
-        <Feather name={icon} size={16} color={focused === id ? colors.primary : colors.textMuted} />
-        <TextInput
-          style={styles.input}
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          placeholderTextColor={colors.textMuted}
-          keyboardType={keyboardType}
-          autoCapitalize={autoCapitalize}
-          secureTextEntry={secure && !showPassword}
-          onFocus={() => setFocused(id)}
-          onBlur={() => setFocused(null)}
-        />
-        {secure && (
-          <TouchableOpacity onPress={() => setShowPassword(v => !v)}>
-            <Feather name={showPassword ? 'eye-off' : 'eye'} size={16} color={colors.textMuted} />
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           <View style={styles.brandWrap}>
             <Image
-              source={require('../../assets/images/splash-icon.png')}
-              style={styles.brandIcon}
+              source={require('../../assets/images/logo.png')}
+              style={{ width: 220, height: 48, marginBottom: spacing.md }}
               resizeMode="contain"
             />
-            <Text style={styles.brand}>PINE</Text>
           </View>
 
           <View style={styles.card}>
@@ -101,15 +100,15 @@ export default function RegisterScreen() {
 
             <View style={styles.nameRow}>
               <View style={{ flex: 1 }}>
-                <InputField id="firstName" label="First Name *" value={firstName} onChangeText={setFirstName} placeholder="John" icon="user" />
+                <InputField id="firstName" label="First Name *" value={firstName} onChangeText={setFirstName} placeholder="Zubair" icon="user" focused={focused} setFocused={setFocused} />
               </View>
               <View style={{ flex: 1 }}>
-                <InputField id="lastName" label="Last Name" value={lastName} onChangeText={setLastName} placeholder="Doe" icon="user" />
+                <InputField id="lastName" label="Last Name" value={lastName} onChangeText={setLastName} placeholder="Mir" icon="user" focused={focused} setFocused={setFocused} />
               </View>
             </View>
 
-            <InputField id="email" label="Email Address *" value={email} onChangeText={setEmail} placeholder="john@example.com" keyboardType="email-address" autoCapitalize="none" icon="mail" />
-            <InputField id="password" label="Password *" value={password} onChangeText={setPassword} placeholder="Create a password" autoCapitalize="none" icon="lock" secure />
+            <InputField id="email" label="Email Address *" value={email} onChangeText={setEmail} placeholder="zubair@example.com" keyboardType="email-address" autoCapitalize="none" icon="mail" focused={focused} setFocused={setFocused} />
+            <InputField id="password" label="Password *" value={password} onChangeText={setPassword} placeholder="Create a password" autoCapitalize="none" icon="lock" secure focused={focused} setFocused={setFocused} showPassword={showPassword} setShowPassword={setShowPassword} />
 
             <PrimaryButton
               label="Create Account"

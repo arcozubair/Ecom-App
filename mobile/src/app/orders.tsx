@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
@@ -16,10 +16,10 @@ export default function OrdersScreen() {
   const router = useRouter();
   const { user } = useAuthStore();
 
-  const { data: orders, isLoading, error, refetch } = useQuery({
+  const { data: orders, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: ['orders', user?.id],
     queryFn: async () => {
-      const res = await apiClient.get('/orders', { params: { customer: user?.id } });
+      const res = await apiClient.get('/orders', { params: { customer: user?.id, per_page: 50 } });
       return res.data;
     },
     enabled: !!user,
@@ -124,6 +124,14 @@ export default function OrdersScreen() {
           renderItem={renderItem}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching && !isLoading}
+              onRefresh={refetch}
+              tintColor={colors.primary}
+              colors={[colors.primary]}
+            />
+          }
         />
       )}
     </SafeAreaView>

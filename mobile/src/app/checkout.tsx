@@ -80,6 +80,7 @@ export default function CheckoutScreen() {
     setIsLoading(true);
     try {
       const orderData = {
+        customer_id: user?.id || 0,
         payment_method: paymentMethod,
         payment_method_title: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment',
         set_paid: false,
@@ -110,10 +111,10 @@ export default function CheckoutScreen() {
       };
       const response = await apiClient.post('/orders', orderData);
       clearCart();
-      Alert.alert('Order Placed! 🎉', `Your order #${response.data.id} has been confirmed.`, [
-        { text: 'Track Order', onPress: () => router.replace('/orders' as any) },
-        { text: 'Back to Home', onPress: () => router.replace('/') },
-      ]);
+      
+      // Navigate to beautiful success screen instead of Alert
+      router.replace({ pathname: '/order-success', params: { orderId: response.data.id } } as any);
+      
     } catch (error: any) {
       Alert.alert('Something went wrong', error.response?.data?.error || 'Failed to place order. Please try again.');
     } finally {
