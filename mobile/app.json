@@ -1,22 +1,20 @@
 {
   "expo": {
-    "name": "Pine Thread",
+    "name": "Pine Thread Store",
     "slug": "pine-thread",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/expo.icon/appicon.png",
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon/appicon.png"
     },
     "android": {
       "package": "com.pine.app",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/expo.icon/appicon.png"
       },
       "predictiveBackGestureEnabled": false
     },
@@ -36,7 +34,7 @@
         {
           "backgroundColor": "#FFFFFF",
           "image": "./assets/images/logo.png",
-          "imageWidth": 250
+          "imageWidth": 200
         }
       ],
       "expo-font"
